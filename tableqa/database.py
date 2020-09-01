@@ -2,10 +2,10 @@
 
 from sqlalchemy import create_engine,types
 import ast
-from agent import Agent
-import column_types
-from data_utils import data_utils
-from nlp import Nlp
+from .agent import Agent
+from .column_types import *
+from .data_utils import data_utils
+from .nlp import Nlp
 
 
 class Database:
@@ -17,14 +17,15 @@ class Database:
         self.data_dir=data_dir
         self.data_process=data_utils(data_dir, self.schema_dir)
         self.nlp=Nlp(data_dir,self.schema_dir)
+        
     def Query_Sqlite(self,question):
         agent=Agent(self.data_dir,self.schema_dir)
         query=agent.get_response(question)   
         print("sql query: {}".format(query))
         engine = create_engine('sqlite://', echo=False)
         csv=self.nlp.csv_select(question)
-        data_frame=self.data_process.get_dataframe(csv).astype(str)
-        schema=self.data_process.get_schema_for_csv(csv)   
+        schema=self.data_process.get_schema_for_csv(csv)
+        data_frame=self.data_process.get_dataframe(csv).astype(str)   
         data_frame = data_frame.fillna(data_frame.mean())
         sql_schema = {}
         for col in schema['columns']:
@@ -41,6 +42,7 @@ class Database:
         data_frame.to_sql(schema['name'].lower(), con=engine, if_exists='replace', dtype=sql_schema)
 
         return engine.execute(query).fetchall()
+    
 
 
 

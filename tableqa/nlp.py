@@ -1,14 +1,15 @@
 
-from data_utils import data_utils
+
 import os
 from transformers import TFBertForQuestionAnswering, BertTokenizer
 from transformers import TFAutoModelForSequenceClassification, AutoTokenizer
 import tensorflow as tf
 from rake_nltk import Rake
-import column_types
 import json
-from clauses import Clause
-from conditionmaps import conditions
+from .clauses import Clause
+from .conditionmaps import conditions
+from .data_utils import data_utils
+from .column_types import *
 
 
 qa_model = TFBertForQuestionAnswering.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
@@ -253,7 +254,6 @@ class Nlp:
                 cat = column_types.Categorical(mappings[s[0]])
                 val = cat.adapt(s[2])
             elif _is_numeric(s[1]):
-    
                 val = column_types.get(s[1])().adapt(s[2], context=q, allowed_kws=[s[0]])
             else:
                 val = column_types.get(s[1])().adapt(s[2])
@@ -328,7 +328,6 @@ class Nlp:
             for col in schema["columns"]:
                 if "priority" in col.keys() and unknown_slot in col["name"]:
                     question=clause.adapt(q,inttype=True,priority=True) 
-                    
                     break
                 else:
                     question=clause.adapt(q)
