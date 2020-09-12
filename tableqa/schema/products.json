@@ -4,12 +4,10 @@
     {
       "name": "retail price",
       "keywords": ["retail price", "MRP", "mrp", "cost"],
-      "priority": "True"
     },
     {
       "name": "discounted price",
       "keywords": ["price", "discount", "discounts", "off", "selling price"],
-      "priority": "True"
     },
     {
       "name": "brand",
